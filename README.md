@@ -1,5 +1,8 @@
+
 # 🚀 MLPilot  
 ### Automated Model Selection & Evaluation Tool
+
+🔗 GitHub Repository: https://github.com/Tabrez10XDev/MLPilot
 
 MLPilot is a modular machine learning pipeline that automatically:
 - selects the best model
@@ -39,19 +42,22 @@ MLPilot/
 │── requirements.txt
 │── CMakeLists.txt
 │── README.md
+│── LICENSE
 
 ---
 
 ## ⚙️ Setup
-Python is mandatory, for additional CLIs install respective languages
 
 python3 -m venv .venv  
 source .venv/bin/activate  
-pip install -r requirements.txt
-brew install libomp (mac)
+pip install -r requirements.txt  
+
+Mac (for XGBoost):
+brew install libomp
+
 ---
 
-## 🚀 Usage (Python CLI)
+## 🚀 Usage
 
 Train:
 python3 -m python_cli.pilot train --data data/titanic.csv --target Survived
@@ -84,17 +90,13 @@ Bash:
 Go:
 go run go_cli/pilot.go train --data data/titanic.csv --target Survived  
 
-Or:
-go build -o gopilot go_cli/pilot.go  
-./gopilot train --data data/titanic.csv --target Survived  
-
 ---
 
 ## 📊 Output
 
-- outputs/output.json → latest run summary  
-- outputs/history_log.json → all runs  
-- outputs/plots/ → generated graphs  
+- outputs/output.json  
+- outputs/history_log.json  
+- outputs/plots/  
 
 ---
 
@@ -107,28 +109,26 @@ go build -o gopilot go_cli/pilot.go
 
 ---
 
-## 🛠️ Dependency Check
-
-MLPilot automatically checks required packages.
-
-If missing:
-pip install -r requirements.txt
-
----
-
 ## 🧩 Architecture
 
 C++ / Bash / Go / Python CLI  
            ↓  
-     python_cli (core engine)  
+     python_cli  
            ↓  
-   ML pipeline + evaluation  
+   ML pipeline  
 
 ---
 
-## 🎯 Key Idea
+## 👥 Authors
 
-One backend, multiple interfaces.
+- Tabrez Mohammed  
+- Ashish Ubale  
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
 
@@ -138,4 +138,3 @@ One backend, multiple interfaces.
 - Modular architecture  
 - Real-world ML workflow  
 - Clean CLI experience  
-- Performance + visualization insights  
