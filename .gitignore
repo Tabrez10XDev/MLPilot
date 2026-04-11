@@ -1,0 +1,64 @@
+# ========================
+# Python
+# ========================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pyc.*
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# ========================
+# Data / Outputs (MLPilot specific)
+# ========================
+data/
+models/
+outputs/
+
+# ========================
+# Logs / JSON outputs
+# ========================
+*.log
+*.json
+
+
+
+# ========================
+# C++ build files
+# ========================
+build/
+*.o
+*.out
+*.exe
+*.dll
+*.so
+*.dylib
+CMakeFiles/
+CMakeCache.txt
+Makefile
+
+# ========================
+# Go build
+# ========================
+gopilot
+*.exe
+
+# ========================
+# macOS
+# ========================
+.DS_Store
+
+# ========================
+# IDE / Editor
+# ========================
+.vscode/
+.idea/
+
+# ========================
+# Jupyter (if used)
+# ========================
+.ipynb_checkpoints/
