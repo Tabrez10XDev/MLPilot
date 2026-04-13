@@ -18,10 +18,13 @@ def load_dataset(path: str, target_column: str):
         print("⚠️ Warning: Dataset contains missing values. Applying automatic handling.")
 
         for col in df.columns:
-            if df[col].dtype == "object":
-                df[col] = df[col].fillna("missing")
-            else:
-                df[col] = df[col].fillna(df[col].median())
+            if df[col].isnull().any():
+                numeric_col = pd.to_numeric(df[col], errors="coerce")
+
+                if numeric_col.notna().sum() == df[col].notna().sum():
+                    df[col] = numeric_col.fillna(numeric_col.median())
+                else:
+                    df[col] = df[col].fillna("missing")
 
     x = df.drop(columns=[target_column])
     y = df[target_column]

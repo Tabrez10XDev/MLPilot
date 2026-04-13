@@ -10,6 +10,20 @@ MLPilot is a modular machine learning pipeline that automatically:
 
 ---
 
+## 🌐 Multi-Language CLI Support
+
+MLPilot runs from **5 languages** — all routing to a single, unified Python ML backend. Write your CLI in whatever language fits your stack; the ML logic stays consistent.
+
+[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](python_cli/)
+[![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=cplusplus&logoColor=white)](cpp_cli/)
+[![Bash](https://img.shields.io/badge/Bash-4EAA25?style=for-the-badge&logo=gnubash&logoColor=white)](bash_cli/)
+[![Go](https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white)](go_cli/)
+[![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)](java_cli/)
+
+> **Python is the base.** All other language wrappers (C++, Bash, Go, Java) delegate to the Python ML engine via subprocess calls, ensuring a single source of truth for model training, evaluation, and inference.
+
+---
+
 ## ✨ Features
 - 🤖 Automatic model selection (Logistic Regression, SVM, KNN, Random Forest, etc.)
 - 📊 Performance evaluation (Accuracy, F1, RMSE, etc.)
@@ -18,11 +32,7 @@ MLPilot is a modular machine learning pipeline that automatically:
 - 💾 Model saving & loading
 - 📜 Run history logging
 - ⏱️ Performance & timing tracking
-- 🌐 Multi-language CLI support:
-  - Python
-  - C++
-  - Bash
-  - Go
+- 🌐 Multi-language CLI support: Python · C++ · Bash · Go · Java
 
 ---
 
@@ -34,6 +44,7 @@ MLPilot/
 │── cpp_cli/
 │── bash_cli/
 │── go_cli/
+│── java_cli/
 │── data/
 │── models/
 │── outputs/
@@ -63,53 +74,68 @@ brew install libomp
 
 ## 🚀 Usage
 
-**Train:**
+### 🐍 Python CLI
+
 ```bash
 python3 -m python_cli.pilot train --data data/titanic.csv --target Survived
-```
-
-**Predict:**
-```bash
-python3 -m python_cli.pilot predict --model models/model.pkl --input data/test.csv
-```
-
-**Evaluate:**
-```bash
-python3 -m python_cli.pilot evaluate --model models/model.pkl --data data/titanic.csv --target Survived
-```
-
-**Clean:**
-```bash
+python3 -m python_cli.pilot predict --model models/<model>.pkl --input data/titanic_inference.csv
+python3 -m python_cli.pilot evaluate --model models/<model>.pkl --data data/titanic.csv --target Survived
 python3 -m python_cli.pilot clean
 ```
 
 ---
 
-## 🌐 Multi-Language CLI Support
+### ⚙️ C++ CLI
 
-All CLIs (Python, C++, Bash, Go) route to a unified Python ML engine, ensuring consistency and maintainability across interfaces.
-
-**Python:**
-```bash
-python3 -m python_cli.pilot train ...
-```
-
-**C++:**
 ```bash
 mkdir build && cd build
 cmake ..
 make
-./mlpilot train --data data/titanic.csv --target Survived
+cd ..
+./build/mlpilot train --data data/titanic.csv --target Survived
+./build/mlpilot predict --model models/<model>.pkl --input data/titanic_inference.csv
+./build/mlpilot evaluate --model models/<model>.pkl --data data/titanic.csv --target Survived
+./build/mlpilot clean
 ```
 
-**Bash:**
+---
+
+### 🐚 Bash CLI
+
 ```bash
+chmod +x bash_cli/pilot.sh
 ./bash_cli/pilot.sh train --data data/titanic.csv --target Survived
+./bash_cli/pilot.sh predict --model models/<model>.pkl --input data/titanic_inference.csv
+./bash_cli/pilot.sh evaluate --model models/<model>.pkl --data data/titanic.csv --target Survived
+./bash_cli/pilot.sh clean
 ```
 
-**Go:**
+---
+
+### 🟢 Go CLI
+
 ```bash
+# Run directly
 go run go_cli/pilot.go train --data data/titanic.csv --target Survived
+go run go_cli/pilot.go predict --model models/<model>.pkl --input data/titanic_inference.csv
+go run go_cli/pilot.go evaluate --model models/<model>.pkl --data data/titanic.csv --target Survived
+go run go_cli/pilot.go clean
+
+# Or build first
+go build -o gopilot go_cli/pilot.go
+./gopilot train --data data/titanic.csv --target Survived
+```
+
+---
+
+### ☕ Java CLI
+
+```bash
+javac java_cli/Pilot.java
+java -cp java_cli Pilot train --data data/titanic.csv --target Survived
+java -cp java_cli Pilot predict --model models/<model>.pkl --input data/titanic_inference.csv
+java -cp java_cli Pilot evaluate --model models/<model>.pkl --data data/titanic.csv --target Survived
+java -cp java_cli Pilot clean
 ```
 
 ---
@@ -155,17 +181,17 @@ Automatically generated for every training run:
 ## 🧩 Architecture
 
 ```
-C++ / Bash / Go / Python CLI
-           ↓
-     python_cli (unified ML backend)
-           ↓
-   scikit-learn Pipeline + ColumnTransformer
-           ↓
-   Multi-model training & evaluation
-           ↓
-   Best model selection (configurable metric)
-           ↓
-   Outputs: model, plots, history log
+Python · C++ · Bash · Go · Java  (CLI wrappers)
+                  ↓
+        python_cli (unified ML backend)
+                  ↓
+    scikit-learn Pipeline + ColumnTransformer
+                  ↓
+      Multi-model training & evaluation
+                  ↓
+     Best model selection (configurable metric)
+                  ↓
+      Outputs: model, plots, history log
 ```
 
 ### Design Decisions
@@ -221,8 +247,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## ⭐ Highlights
 
-- Multi-language system design
+- Multi-language system design (Python · C++ · Bash · Go · Java)
 - Modular, extensible architecture
 - Real-world ML workflow with robust error handling
-- Clean CLI experience across Python, C++, Bash, and Go
+- Clean CLI experience with consistent behavior across all languages
 - Reproducible, logged training runs

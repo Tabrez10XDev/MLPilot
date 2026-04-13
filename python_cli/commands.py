@@ -178,6 +178,7 @@ def handle_predict(args: argparse.Namespace) -> None:
     prediction_df.to_csv(config.output_path, index=False)
 
     print("\n=== MLPilot Prediction Results ===")
+    print("\n--- Predicted Results are written to output/predictions.csv ---")
     print(f"Model ID: {model_bundle['model_id']}")
     print(f"Model name: {model_bundle['model_name']}")
     print(f"Predictions saved to: {config.output_path}")

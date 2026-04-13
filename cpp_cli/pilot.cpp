@@ -174,9 +174,10 @@ std::string quote_argument(const std::string& value) {
     return escaped;
 }
 
+
 std::string build_python_command(const CommandLineOptions& options) {
     std::ostringstream command;
-    command << "python3 python_cli/pilot.py " << options.command;
+    command << "python3 -m python_cli.pilot " << options.command;
 
     if (options.command == "train") {
         command << " --data " << quote_argument(options.data_path)
