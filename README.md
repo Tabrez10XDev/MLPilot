@@ -178,7 +178,7 @@ Automatically generated for every training run:
 - **Model comparison chart** — compare all candidate models side by side
 - **Confusion matrix** — evaluate classification performance
 - **ROC curve** — visualize true/false positive trade-offs
-- **Feature importance** — understand which features drive predictions
+- **Feature importance** — understand which features drive predictions (Available for tree based models -- exp)
 
 ---
 
