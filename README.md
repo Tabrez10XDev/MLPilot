@@ -10,6 +10,12 @@ MLPilot is a modular machine learning pipeline that automatically:
 
 ---
 
+Currently MLPilot accepts only tabular data and can do regression or classification tasks
+For each task we have an arsenal of models that can be used.
+If stuck, make use of the --help flag.
+
+Feel free to try with your own dataset! Happy hacking!
+
 ## 🌐 Multi-Language CLI Support
 
 MLPilot runs from **5 languages** — all routing to a single, unified Python ML backend. Write your CLI in whatever language fits your stack; the ML logic stays consistent.

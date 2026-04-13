@@ -15,7 +15,18 @@ def load_model_bundle(model_path: str) -> Dict[str, Any]:
     if not os.path.exists(model_path):
         raise FileNotFoundError(f"Model file not found: {model_path}")
 
-    model_bundle = joblib.load(model_path)
+    try:
+        model_bundle = joblib.load(model_path)
+    except Exception as exc:
+        raise ValueError(
+            f"Invalid model file: {model_path}. The file is corrupted or not a valid MLPilot model bundle."
+        ) from exc
+
+    if not isinstance(model_bundle, dict):
+        raise ValueError(
+            f"Invalid model file: {model_path}. Expected a model bundle dictionary."
+        )
+
     required_keys = {"model_id", "model_name", "task_type", "pipeline", "target_column"}
     missing_keys = required_keys - set(model_bundle.keys())
     if missing_keys:

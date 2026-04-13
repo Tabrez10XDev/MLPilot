@@ -1,12 +1,42 @@
 import pandas as pd
 import os
+import csv
 from typing import Tuple
+
+
+def _find_duplicate_csv_headers(path: str) -> list[str]:
+    try:
+        with open(path, "r", encoding="utf-8", newline="") as f:
+            reader = csv.reader(f)
+            headers = next(reader, [])
+    except Exception:
+        return []
+
+    seen = set()
+    duplicates = []
+    for header in headers:
+        if header in seen and header not in duplicates:
+            duplicates.append(header)
+        seen.add(header)
+    return duplicates
 
 def load_dataset(path: str, target_column: str):
     try:
         df = pd.read_csv(path)
     except Exception:
         raise ValueError(f"Failed to read dataset at '{path}'. File may be corrupted.")
+
+    duplicate_headers = _find_duplicate_csv_headers(path)
+    if target_column in duplicate_headers:
+        raise ValueError(
+            f"Dataset contains duplicate target column '{target_column}'. "
+            "This causes target leakage and invalid metrics. Please remove duplicate columns."
+        )
+    if duplicate_headers:
+        print(
+            f"⚠️ Warning: Dataset contains duplicate column headers: {duplicate_headers}. "
+            "Please verify your schema."
+        )
 
     if df.empty:
         raise ValueError("Dataset is empty.")
@@ -28,6 +58,13 @@ def load_dataset(path: str, target_column: str):
 
     x = df.drop(columns=[target_column])
     y = df[target_column]
+
+    leaked_feature_columns = [col for col in x.columns if x[col].equals(y)]
+    if leaked_feature_columns:
+        raise ValueError(
+            f"Target leakage detected: feature columns duplicate target '{target_column}': {leaked_feature_columns}. "
+            "Remove these columns before training."
+        )
 
     if len(df) < 10:
         raise ValueError("Dataset too small for training.")
