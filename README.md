@@ -87,6 +87,8 @@ python3 -m python_cli.pilot clean
 
 ## 🌐 Multi-Language CLI Support
 
+All CLIs (Python, C++, Bash, Go) route to a unified Python ML engine, ensuring consistency and maintainability across interfaces.
+
 **Python:**
 ```bash
 python3 -m python_cli.pilot train ...
@@ -122,10 +124,31 @@ go run go_cli/pilot.go train --data data/titanic.csv --target Survived
 
 ## 📈 Visualizations
 
-- Model comparison chart
-- Confusion matrix
-- ROC curve
-- Feature importance
+Automatically generated for every training run:
+
+- **Model comparison chart** — compare all candidate models side by side
+- **Confusion matrix** — evaluate classification performance
+- **ROC curve** — visualize true/false positive trade-offs
+- **Feature importance** — understand which features drive predictions
+
+---
+
+## 🚀 Advanced Features
+
+- ⏱️ **Per-model training time tracking**  
+  Compare performance vs. computational cost across all candidate models.
+
+- 📊 **Model comparison visualization**  
+  Automatically generates charts comparing all trained models.
+
+- 🧠 **Best model explanation**  
+  Provides reasoning for model selection based on metrics and performance.
+
+- 🧾 **Run history tracking**  
+  Maintains a persistent log of all training runs with metadata.
+
+- 🔍 **Dataset-aware preprocessing**  
+  Handles numerical and categorical data, with automatic feature encoding.
 
 ---
 
@@ -134,10 +157,52 @@ go run go_cli/pilot.go train --data data/titanic.csv --target Survived
 ```
 C++ / Bash / Go / Python CLI
            ↓
-     python_cli
+     python_cli (unified ML backend)
            ↓
-   ML pipeline
+   scikit-learn Pipeline + ColumnTransformer
+           ↓
+   Multi-model training & evaluation
+           ↓
+   Best model selection (configurable metric)
+           ↓
+   Outputs: model, plots, history log
 ```
+
+### Design Decisions
+
+- **Single ML backend, multiple interfaces** — All CLIs route to a unified Python engine for consistency and maintainability.
+- **Pipeline-based architecture** — scikit-learn Pipelines and ColumnTransformers handle preprocessing and modeling in a single flow.
+- **Automatic model selection** — Multiple models are trained and evaluated, with the best selected based on a configurable metric.
+- **Graceful degradation of dependencies** — Optional dependencies like XGBoost are used only if available, preventing crashes.
+- **Modular code structure** — Concerns are separated into commands, models, preprocessing, visualization, and utilities.
+- **Reproducibility-first design** — Random seeds, dataset paths, and configurations are logged for every run.
+- **Cross-platform compatibility** — Designed to run on macOS, Linux, and Windows with minimal setup.
+
+---
+
+## 🛡️ Robustness & Error Handling
+
+MLPilot is designed to handle real-world imperfect data:
+
+- Detects missing or invalid target columns
+- Handles empty or corrupted datasets gracefully
+- Prevents crashes from missing optional dependencies
+- Provides clear, user-friendly error messages
+- Validates input schema before training or inference
+
+---
+
+## 🧩 Extensibility
+
+MLPilot is designed to be easily extendable:
+
+- New models can be added with minimal changes
+- Additional CLI languages can be integrated easily
+- Visualization modules are plug-and-play
+- Designed to support future integration of:
+  - Hyperparameter tuning
+  - REST APIs
+  - Web dashboards
 
 ---
 
@@ -157,6 +222,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## ⭐ Highlights
 
 - Multi-language system design
-- Modular architecture
-- Real-world ML workflow
-- Clean CLI experience
+- Modular, extensible architecture
+- Real-world ML workflow with robust error handling
+- Clean CLI experience across Python, C++, Bash, and Go
+- Reproducible, logged training runs
