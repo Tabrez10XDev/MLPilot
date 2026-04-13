@@ -3,6 +3,13 @@ from __future__ import annotations
 import argparse
 from python_cli.commands import handle_train, handle_predict, handle_evaluate, handle_clean
 
+
+def _format_os_error(exc: OSError) -> str:
+    path = getattr(exc, "filename", None)
+    if path:
+        return f"Cannot write to path: {path} ({exc.strerror or str(exc)})"
+    return f"File system error: {exc}"
+
 def check_dependencies():
     required_packages = ["numpy", "pandas", "sklearn", "matplotlib"]
     missing = []
@@ -128,6 +135,8 @@ def main() -> None:
         print(f"Error: {exc}")
     except ValueError as exc:
         print(f"Input error: {exc}")
+    except OSError as exc:
+        print(f"Error: {_format_os_error(exc)}")
     except Exception as exc:
         print(f"Unexpected error: {exc}")
 

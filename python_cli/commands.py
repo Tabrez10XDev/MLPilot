@@ -21,6 +21,11 @@ from python_cli.visualization import (
     save_roc_curve_plot,
 )
 
+
+def _validate_train_args(config: TrainConfig) -> None:
+    if not (0 <= config.random_seed <= 4294967295):
+        raise ValueError("Seed must be between 0 and 4294967295")
+
 def handle_train(args: argparse.Namespace, interface: str = "python") -> None:
     start_time = time.time()
     started_at = datetime.now().isoformat()
@@ -33,6 +38,8 @@ def handle_train(args: argparse.Namespace, interface: str = "python") -> None:
         save_path=args.save,
         output_path=args.output,
     )
+
+    _validate_train_args(config)
 
     x, y = load_dataset(config.data_path, config.target_column)
     task_type = detect_task_type(y)

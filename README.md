@@ -15,8 +15,9 @@ For each task we have an arsenal of models that can be used.
 If stuck, make use of the --help flag.
 
 Additional Info: 
-Predictions.csv and outputs.json are overwritten for each model action,
-Refer to history logs for training history
+=> Predictions.csv and outputs.json are overwritten for each model action,
+Refer to history logs for training history.
+=> Clean command nukes models and output folder, save if you need it for later prediction / evaluation
 
 Feel free to try with your own dataset! Happy hacking!
 
