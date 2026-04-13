@@ -12,6 +12,8 @@ class TrainConfig:
     metric: str | None = None
     save_path: str | None = None
     output_path: str = "outputs/output.json"
+    max_models: int | None = None
+    max_train_seconds: int = 180
 
 
 @dataclass

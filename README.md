@@ -94,6 +94,18 @@ python3 -m python_cli.pilot evaluate --model models/<model>.pkl --data data/tita
 python3 -m python_cli.pilot clean
 ```
 
+Train performance controls:
+
+- `--max-models N` → limits how many candidate models are trained
+- `--max-train-seconds S` → max time allowed for full model search (default: `180`)
+
+Example:
+
+```bash
+python3 -m python_cli.pilot train --data data/big.csv --target Survived --max-models 3
+python3 -m python_cli.pilot train --data data/big.csv --target Survived --max-train-seconds 60
+```
+
 ---
 
 ### ⚙️ C++ CLI

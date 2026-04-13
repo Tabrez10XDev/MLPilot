@@ -16,6 +16,9 @@ struct CommandLineOptions {
     std::string metric;
     double test_size = 0.2;
     int seed = 42;
+    int max_models = -1;
+    int max_train_seconds = 180;
+    bool has_max_train_seconds = false;
 };
 
 void print_main_help() {
@@ -43,7 +46,9 @@ void print_train_help() {
         << "  --seed <int>          Random seed (default: 42)\n"
         << "  --metric <name>       Primary metric for model selection\n"
         << "  --save <file>         Optional path to save trained model\n"
-        << "  --output <file>       Output JSON report path\n";
+        << "  --output <file>       Output JSON report path\n"
+        << "  --max-models <int>    Limit number of candidate models\n"
+        << "  --max-train-seconds   Timeout for full model search (default: 180)\n";
 }
 
 void print_predict_help() {
@@ -128,6 +133,11 @@ CommandLineOptions parse_arguments(int argc, char* argv[]) {
             options.test_size = std::stod(require_value(args, i, arg));
         } else if (arg == "--seed") {
             options.seed = std::stoi(require_value(args, i, arg));
+        } else if (arg == "--max-models") {
+            options.max_models = std::stoi(require_value(args, i, arg));
+        } else if (arg == "--max-train-seconds") {
+            options.max_train_seconds = std::stoi(require_value(args, i, arg));
+            options.has_max_train_seconds = true;
         } else {
             throw std::runtime_error("Unknown argument: " + arg);
         }
@@ -193,6 +203,12 @@ std::string build_python_command(const CommandLineOptions& options) {
         }
         if (!options.output_path.empty()) {
             command << " --output " << quote_argument(options.output_path);
+        }
+        if (options.max_models > 0) {
+            command << " --max-models " << options.max_models;
+        }
+        if (options.has_max_train_seconds) {
+            command << " --max-train-seconds " << options.max_train_seconds;
         }
         
         command << " --interface cpp";

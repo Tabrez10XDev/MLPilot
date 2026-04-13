@@ -1,5 +1,8 @@
 import numpy as np
 import pandas as pd
+import time
+import signal
+from contextlib import contextmanager
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 from sklearn.pipeline import Pipeline
@@ -7,7 +10,7 @@ from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
 from sklearn.base import clone
 from sklearn.linear_model import LinearRegression, LogisticRegression, Ridge
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, Iterator, List, Tuple
 from sklearn.ensemble import (
     RandomForestClassifier,
     RandomForestRegressor,
@@ -26,6 +29,27 @@ except Exception:
 from python_cli.config import ModelResult, TrainConfig
 from python_cli.preprocess import  build_preprocessor
 from python_cli.metrics import evaluate_classification, evaluate_regression, get_default_metric, is_higher_better
+
+
+@contextmanager
+def _posix_time_limit(seconds: float) -> Iterator[None]:
+    if seconds <= 0:
+        raise TimeoutError("Training timed out")
+
+    if not hasattr(signal, "setitimer"):
+        yield
+        return
+
+    def _handle_timeout(_signum, _frame):
+        raise TimeoutError("Training timed out")
+
+    previous_handler = signal.signal(signal.SIGALRM, _handle_timeout)
+    signal.setitimer(signal.ITIMER_REAL, seconds)
+    try:
+        yield
+    finally:
+        signal.setitimer(signal.ITIMER_REAL, 0)
+        signal.signal(signal.SIGALRM, previous_handler)
 
 
 def get_candidate_models(task_type: str, random_seed: int) -> Dict[str, Any]:
@@ -100,6 +124,13 @@ def train_and_select_best(
     preprocessor = build_preprocessor(x)
     models = get_candidate_models(task_type, config.random_seed)
 
+    if config.max_models is not None:
+        model_items = list(models.items())[: config.max_models]
+        models = dict(model_items)
+        print(f"⚡ Fast mode: training {len(models)} model(s)")
+
+    train_start_time = time.time()
+
     stratify = y if task_type == "classification" else None
     x_train, x_test, y_train, y_test = train_test_split(
         x,
@@ -114,14 +145,35 @@ def train_and_select_best(
     predictions_by_model: Dict[str, np.ndarray] = {}
 
     for model_name, model in models.items():
+        remaining_seconds = None
+        if config.max_models is None:
+            elapsed_seconds = time.time() - train_start_time
+            remaining_seconds = config.max_train_seconds - elapsed_seconds
+            if remaining_seconds <= 0:
+                raise TimeoutError(
+                    "Training is taking too long with all candidate models. "
+                    "Please retry with --max-models to limit the search (for example: --max-models 3)."
+                )
+
         pipeline = Pipeline(
             steps=[
                 ("preprocessor", preprocessor),
                 ("model", clone(model)),
             ]
         )
-        pipeline.fit(x_train, y_train)
-        predictions = pipeline.predict(x_test)
+        try:
+            if remaining_seconds is not None:
+                with _posix_time_limit(remaining_seconds):
+                    pipeline.fit(x_train, y_train)
+                    predictions = pipeline.predict(x_test)
+            else:
+                pipeline.fit(x_train, y_train)
+                predictions = pipeline.predict(x_test)
+        except TimeoutError as exc:
+            raise TimeoutError(
+                "Training is taking too long with all candidate models. "
+                "Please retry with --max-models to limit the search (for example: --max-models 3)."
+            ) from exc
 
         if task_type == "classification":
             metrics = evaluate_classification(y_test, predictions)

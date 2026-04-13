@@ -15,6 +15,13 @@ public class Pilot {
         System.out.println("  predict    Run inference using a saved model");
         System.out.println("  evaluate   Evaluate a saved model");
         System.out.println("  clean      Remove generated files");
+        System.out.println();
+        System.out.println("Train options (forwarded to Python backend):");
+        System.out.println("  --max-models <N>         Limit number of candidate models");
+        System.out.println("  --max-train-seconds <S>  Timeout for full model search (default: 180)");
+        System.out.println();
+        System.out.println("Example:");
+        System.out.println("  java -cp java_cli Pilot train --data data/big.csv --target Survived --max-models 3");
     }
 
     public static void main(String[] args) {

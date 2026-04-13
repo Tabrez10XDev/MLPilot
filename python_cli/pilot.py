@@ -78,6 +78,18 @@ def parse_args() -> argparse.Namespace:
         help="Output JSON report path",
     )
     train_parser.add_argument(
+        "--max-models",
+        type=int,
+        default=None,
+        help="Limit number of candidate models to train (faster on large datasets)",
+    )
+    train_parser.add_argument(
+        "--max-train-seconds",
+        type=int,
+        default=180,
+        help="Maximum training time in seconds before aborting full model search (default: 180)",
+    )
+    train_parser.add_argument(
         "--interface",
         default="python",
         choices=["python", "cpp", "bash", "java", "go"],
@@ -134,6 +146,8 @@ def main() -> None:
     except FileNotFoundError as exc:
         print(f"Error: {exc}")
     except ValueError as exc:
+        print(f"Input error: {exc}")
+    except TimeoutError as exc:
         print(f"Input error: {exc}")
     except OSError as exc:
         print(f"Error: {_format_os_error(exc)}")

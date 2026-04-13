@@ -15,8 +15,13 @@ print_help() {
   echo "  evaluate   Evaluate a saved model"
   echo "  clean      Remove models and outputs"
   echo ""
+  echo "Train options (forwarded to Python backend):"
+  echo "  --max-models <N>         Limit number of candidate models"
+  echo "  --max-train-seconds <S>  Timeout for full model search (default: 180)"
+  echo ""
   echo "Examples:"
   echo "  ./bash_cli/pilot.sh train --data data/titanic.csv --target Survived"
+  echo "  ./bash_cli/pilot.sh train --data data/big.csv --target Survived --max-models 3"
   echo "  ./bash_cli/pilot.sh predict --model models/model.pkl --input data/input.csv"
 }
 

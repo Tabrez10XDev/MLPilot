@@ -25,6 +25,10 @@ from python_cli.visualization import (
 def _validate_train_args(config: TrainConfig) -> None:
     if not (0 <= config.random_seed <= 4294967295):
         raise ValueError("Seed must be between 0 and 4294967295")
+    if config.max_models is not None and config.max_models <= 0:
+        raise ValueError("--max-models must be a positive integer")
+    if config.max_train_seconds <= 0:
+        raise ValueError("--max-train-seconds must be a positive integer")
 
 def handle_train(args: argparse.Namespace, interface: str = "python") -> None:
     start_time = time.time()
@@ -37,6 +41,8 @@ def handle_train(args: argparse.Namespace, interface: str = "python") -> None:
         metric=args.metric,
         save_path=args.save,
         output_path=args.output,
+        max_models=args.max_models,
+        max_train_seconds=args.max_train_seconds,
     )
 
     _validate_train_args(config)
