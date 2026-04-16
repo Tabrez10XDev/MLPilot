@@ -190,9 +190,6 @@ Automatically generated for every training run:
 - 📊 **Model comparison visualization**  
   Automatically generates charts comparing all trained models.
 
-- 🧠 **Best model explanation**  
-  Provides reasoning for model selection based on metrics and performance.
-
 - 🧾 **Run history tracking**  
   Maintains a persistent log of all training runs with metadata.
 
